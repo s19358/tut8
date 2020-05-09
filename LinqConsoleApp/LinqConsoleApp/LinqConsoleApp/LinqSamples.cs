@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace LinqConsoleApp
 {
+
+
+
     public class LinqSamples
     {
         public static IEnumerable<Emp> Emps { get; set; }
@@ -242,6 +245,12 @@ namespace LinqConsoleApp
                           FirstName = emp.Ename,
                           EmployeeJob = emp.Job
                       };
+
+            var res2 = Emps.Select(emp => new
+                            {
+                                FirstName = emp.Ename,
+                                EmployeeJob = emp.Job 
+                            });
         }
 
         /// <summary>
@@ -251,31 +260,49 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task6()
         {
+            var res = from emp in Emps
+                      join dept in Depts on emp.Deptno equals dept.Deptno
+                      select new
+                      {
+                          emp.Ename,
+                          emp.Job,
+                          dept.Dname
+                      };
+
+            var res2 = Emps.Join(Depts, e => e.Deptno, d => d.Deptno, (r, w) => new { r.Ename, r.Job, w.Dname });
            
         }
 
         /// <summary>
-        /// SELECT Job AS EmployeeJob, COUNT(1) EmployeeNuber FROM Emps GROUP BY Job;
+        /// SELECT Job AS EmployeeJob, COUNT(1) EmployeeNumber FROM Emps GROUP BY Job;
         /// </summary>
         public void Task7()
         {
             var res = from emp in Emps
-                      group emp by emp.Job into Job
-                      select new
-                      {
-                          EmployeeJob = Job,
-                          EmployeeNuber = Job.Count()
-                      };
+                          group emp by emp.Job into Job
+                          select new
+                          {
+                              EmployeeJob = Job.Key,
+                              EmployeeNumber = Job.Count()
+                          };
+
+            var res2 = Emps
+                .GroupBy(e => e.Job)
+                .Select(emp => new
+                {
+                    EmployeeJob = emp.Key,
+                    EmployeeNumber = emp.Count()
+                });
+
         }
 
-
-        /// <summary>
-        /// Return value "true" if at least one of 
-        /// the elements of collection works as "Backend programmer".
-        /// </summary>
-        public void Task8()
+            /// <summary>
+            /// Return value "true" if at least one of 
+            /// the elements of collection works as "Backend programmer".
+            /// </summary>
+            public void Task8()
         {
-            
+            var res = Emps.Any(e => e.Job == "Backend programmer");
         }
 
         /// <summary>
@@ -284,7 +311,10 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task9()
         {
-            
+            var res = Emps
+                .Where(e => e.Job == "Frontend programmer")
+                .OrderByDescending(e => e.HireDate)
+                .FirstOrDefault();
         }
 
         /// <summary>
@@ -294,7 +324,18 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task10()
         {
-           
+            var res = Emps
+                 .Select(e => new {
+                     e.Ename,
+                     e.Job,
+                     e.HireDate
+                 })
+                 .Union((new List<string> { "X" }).Select(e => new
+                 {
+                      "No value",
+                     null, 
+                     null
+                 });
         }
 
         //Find the employee with the highest salary using the Aggregate () method
