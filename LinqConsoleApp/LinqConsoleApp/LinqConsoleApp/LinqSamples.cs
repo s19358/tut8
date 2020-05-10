@@ -324,31 +324,36 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task10()
         {
-            var res = Emps
-                 .Select(e => new {
-                     e.Ename,
-                     e.Job,
-                     e.HireDate
-                 })
-                 .Union((new List<string> { "X" }).Select(e => new
-                 {
-                      "No value",
-                     null, 
-                     null
-                 });
+
+            string b = null;
+            DateTime? c = null;
+            var list = new {a="No value",b,c };
+            var res = Emps.Select(e => new { e.Ename, e.Job, e.HireDate }).Union(list);
+
+            //??
         }
 
         //Find the employee with the highest salary using the Aggregate () method
         public void Task11()
         {
-            
+            var res = Emps.Aggregate((e1, e2) => e1.Salary > e2.Salary ? e1 : e2);
+            //var res2 = Emps.Max(e => e.Salary);
         }
 
         //Using the LINQ language and the SelectMany method, 
         //perform a CROSS JOIN join between collections Emps and Depts
         public void Task12()
         {
-            
+            var res = Emps.SelectMany(x1 => Depts.Select(x2 => new { x1,x2.Dname}));
+            var result = Emps.SelectMany(e => Depts, (e, d) => new
+            {
+                emp = e,
+                dept = d
+            });
+
+            var query = from e in Emps
+                        from d in Depts
+                        select new { e, d };
         }
     }
 }
