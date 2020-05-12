@@ -269,7 +269,7 @@ namespace LinqConsoleApp
                           dept.Dname
                       };
 
-            var res2 = Emps.Join(Depts, e => e.Deptno, d => d.Deptno, (r, w) => new { r.Ename, r.Job, w.Dname });
+            var res2 = Emps.Join(Depts, e => e.Deptno, d => d.Deptno, (e, d) => new { e.Ename, e.Job, d.Dname });
            
         }
 
@@ -324,13 +324,19 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task10()
         {
-
+            /*
             string b = null;
             DateTime? c = null;
             var list = new {a="No value",b,c };
             var res = Emps.Select(e => new { e.Ename, e.Job, e.HireDate }).Union(list);
+            */
+            var res = Emps.Select(e1 => (e1.Ename, e1.Job, e1.HireDate))
+                                  .Union(Emps
+                                  .Select(e2 => (Ename: "No value", 
+                                                         Job: (string) null, 
+                                                         HireDate: (DateTime?) null)));
 
-            //??
+           
         }
 
         //Find the employee with the highest salary using the Aggregate () method

@@ -10,6 +10,7 @@ namespace LinqConsoleApp
             d.Task7();
             d.Task8();
             d.Task9();
+            d.Task10();
             d.Task11();
             d.Task12();
         }
